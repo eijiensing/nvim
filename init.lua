@@ -7,19 +7,22 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
--- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
+-- Disable mouse
+vim.opt.mouse = ''
 
+vim.opt.termguicolors = true
+
+vim.diagnostic.config {
+  virtual_text = false, -- Disables inline virtual text
+  signs = true, -- Keeps the signs in the gutter
+  underline = true, -- Keeps underlining of problematic text
+  update_in_insert = false, -- Avoids updating diagnostics in insert mode
+}
 -- Make line numbers default
 -- vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 vim.opt.relativenumber = true
-
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
@@ -73,6 +76,15 @@ vim.opt.scrolloff = 15
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+
+vim.keymap.set('n', '<leader>tt', function()
+  local current_background = vim.o.background
+  if current_background == 'dark' then
+    vim.opt.background = 'light'
+  else
+    vim.opt.background = 'dark'
+  end
+end, { desc = '[T]oggle [T]heme' })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -397,6 +409,9 @@ require('lazy').setup({
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
+          -- Show hover information
+          map('<leader>h', vim.lsp.buf.hover, '[H]over')
+
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -518,7 +533,12 @@ require('lazy').setup({
       }
     end,
   },
-
+  {
+    'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
+    config = function()
+      require('lsp_lines').setup()
+    end,
+  },
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -676,6 +696,10 @@ require('lazy').setup({
     'sainnhe/gruvbox-material',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
+      vim.g.gruvbox_material_background = 'soft'
+      vim.g.gruvbox_material_foreground = 'material'
+      vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
+      vim.g.gruvbox_material_show_eob = 1
       vim.cmd.colorscheme 'gruvbox-material'
       vim.cmd.hi 'Comment gui=none'
     end,
