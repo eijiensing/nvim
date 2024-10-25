@@ -484,6 +484,7 @@ require('lazy').setup({
           },
         },
         rust_analyzer = {},
+        ts_ls = {},
         tailwindcss = {},
         eslint = {
           settings = {
@@ -510,7 +511,6 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
-        'eslint',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
